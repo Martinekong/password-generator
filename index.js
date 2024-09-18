@@ -24,14 +24,30 @@ function generate() {
 //COPY ON CLICK
 
 function copyToClipboard(passwordElement) {
-  const passwordTExt = passwordElement.textContent
-  navigator.clipboard.writeText(passwordTExt)
-    .then(() => {
-      alert("Password copied: " + passwordText)
-    })
-    .catch(err => {
-      alert("Failed to copy: ", err)
-    })
+  const passwordText = passwordElement.textContent;
+
+  if (navigator.clipboard) {
+      navigator.clipboard.writeText(passwordText)
+          .then(() => {
+              alert("Password copied: " + passwordText);
+          })
+          .catch(() => {
+              alert("Failed to copy. Please try again.");
+          });
+  } else {
+      // Fallback for older browsers
+      const tempInput = document.createElement("input");
+      tempInput.value = passwordText;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+          document.execCommand("copy");
+          alert("Password copied: " + passwordText);
+      } catch (err) {
+          alert("Failed to copy: " + err);
+      }
+      document.body.removeChild(tempInput);
+  }
 }
 
 //Add event listeners to copy on click
